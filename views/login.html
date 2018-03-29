@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head> 
+    <title>Login</title>
+    <meta charset="utf-8">
+    <script src="validate.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <form class="reg-form" onsubmit="return validate('log')" action="/login" method="POST" id="reg-form">
+            <div class="inp-field">
+                <label for='username' id="usname-label">Username</label>
+                <input type='text' name='username' id='username'><br>
+            </div>
+
+            <div class="inp-field">
+                <label for='pass' id="pass-label">Password</label>
+                <input type='password' name='password' id='pass'><br>
+            </div>
+            <button class="btn">Login</button>
+    </form>
+</body>
+
+extend layout
+block content
+  p
+    | Vivamus hendrerit arcu sed erat molestie
+    | vehicula. Sed auctor neque eu tellus
+    | rhoncus ut eleifend nibh porttitor. Ut in.
+  p
+    | Donec congue lacinia dui, a porttitor
+    | lectus condimentum laoreet. Nunc eu
+    | ullamcorper orci. Quisque eget odio ac
+    | lectus vestibulum faucibus eget in metus.
+    | In pellentesque faucibus vestibulum. Nulla
+    | at nulla justo, eget luctus tortor.
+block sidebar
+  .widget
+    h1 Widget
+    p
+      | Sed auctor neque eu tellus rhoncus ut
+      | eleifend nibh porttitor. Ut in nulla enim.
+    p
+      | Vivamus hendrerit arcu sed erat molestie
+      | vehicula.

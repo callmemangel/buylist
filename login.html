@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<head> 
+    <title>Login</title>
+    <meta charset="utf-8">
+    <script src="validate.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <form class="reg-form" onsubmit="return validate('log')" action="/login" method="POST" id="reg-form">
+            <div class="inp-field">
+                <label for='username' id="usname-label">Username</label>
+                <input type='text' name='username' id='username'><br>
+            </div>
+
+            <div class="inp-field">
+                <label for='pass' id="pass-label">Password</label>
+                <input type='password' name='password' id='pass'><br>
+            </div>
+            <button class="btn">Login</button>
+    </form>
+</body>
