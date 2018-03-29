@@ -1,0 +1,23 @@
+
+extend layout
+block content
+  script(src="validate.js")
+  form(
+  class='reg-form' 
+  onsubmit="return validate('#{type}')"
+  action='/login'
+  method='POST'
+  id='reg-form'
+  )
+    .inp-field
+        label(for='username' id="usname-label") Username 
+        block tag 
+        input(type='text' name='username' id='username')
+
+    .inp-field
+        label(for='pass' id="pass-label") Password 
+        block tag
+        input(type='password' name='password' id='pass')
+    block input
+    button(class="btn") #{button}
+

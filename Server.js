@@ -17,13 +17,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieSession({
   name: 'session',
   keys: ['key'],
-  // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
-app.get('/jade', (req, res) => {
-    res.render('layout', {title: 'Layout'});
-});
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/index.html'));
@@ -40,7 +37,10 @@ function loadUser(req, res, next) {
 app.route('/register') 
 
     .get(loadUser, (req, res) => {
-        res.sendFile(path.join(__dirname + '/register.html'));
+        res.render('register', {
+        title: 'Register', 
+        button: 'Register',
+        type: 'reg'});
     })
 
     .post((req, res) => {
@@ -64,14 +64,17 @@ app.route('/register')
                     res.redirect('/');
                 });
             } else {
-                res.sendFile(path.join(__dirname + '/register.html'));
+                res.redirect('/login');
             }
         });
     });
 
 app.route('/login')
     .get(loadUser, (req, res) => {
-        res.sendFile(path.join(__dirname + '/login.html'));
+        res.render('login', {
+        title: 'Login', 
+        button: 'Login',
+        type: 'log'});
     })
     .post((req, res) => {
 
