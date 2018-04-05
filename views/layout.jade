@@ -9,19 +9,26 @@ html
     content="width=device-width, initial-scale=1, shirink-to-fit=no"
     )
     link(rel="stylesheet" href="css/style.css")
+    link(href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet")
 
   body
-    nav(class="navbar") 
+    div(class="navbar") 
        ul   
         li 
          a(href='/') Home
         li 
          a(href='create') Create
+        - if (!isLogged) {
         li 
          a(href='login') Login 
         li 
          a(href='register') Register
+        - }
+        - if (isLogged) {
         li 
          a(href='logout') Logout
+        - }
+    
     block content 
 

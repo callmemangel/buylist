@@ -5,8 +5,11 @@ block input
     .inp-field
         label(for='pass2' id="pass2-label") Repeat password 
             span(class="red") *
-        input(type='password' name='password2' id='pass2')
-        label(for="reg-form" id="reg-label") 
+        input(type='password' name='password2' id='pass2' autofocus)
+        label(for="form" id="reg-label") 
             span(class='red') * 
             span - required
         label(class="red bad-pass-label" id="badpasslabel") Passwords does not match
+        - if (nameIsBusy) {
+        label(class="red") Sorry, this username is taken
+        - }

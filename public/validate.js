@@ -5,13 +5,13 @@ function Validator() {
     this.labels.push(document.getElementById('pass-label'));
     
     this.attrs = [];
-    this.attrs.push(document.getElementById('reg-form').username.value);
-    this.attrs.push(document.getElementById('reg-form').password.value);
+    this.attrs.push(document.getElementById('form').username.value);
+    this.attrs.push(document.getElementById('form').password.value);
 
     this.validateRegForm = () => {
 
         this.labels.push(document.getElementById('pass2-label'));
-        this.attrs.push(document.getElementById('reg-form').password2.value);
+        this.attrs.push(document.getElementById('form').password2.value);
 
         let retval = false;
         let badPassLabel = document.getElementById('badpasslabel');
@@ -56,15 +56,28 @@ function hide(elem) {
     elem.style.display = "none";
 }
 
-function validate(type) {
-    
-    let validator = new Validator();
+function validateCreateForm() {
+    let value = document.getElementById('list-name').value;
+    let labelColor = document.getElementById('list-name-label').style;
 
-    if (type == 'reg') {
-        return validator.validateRegForm();
-    } else if (type == 'log') {
-        return validator.validateLogForm();
+    if (value) {
+        labelColor.color = 'black';
+        return true;
+    } else {
+        labelColor.color = 'red';
+        return false;
     }
+}
+
+function validate(type) {
+    if (type == 'register') {
+        let validator = new Validator();
+        return validator.validateRegForm();
+    } else if (type == 'login') {
+        let validator = new Validator();
+        return validator.validateLogForm();
+    } else if (type == 'create')
+        return validateCreateForm();
 
     console.log("bad type of request"); 
 }

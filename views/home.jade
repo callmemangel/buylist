@@ -1,0 +1,28 @@
+mixin tile-list(list, findex)
+    div(class="tile-list" id="tilelist")
+        h2(class="list-name" id="list-name-#{findex}")= list.name
+        .items 
+            - if (list.data.length != 0) {
+            h1(class='hover-list show') Show
+            ul
+              each item, index in list.data
+                li
+                 span(class='itemname' id='#{index}-name')= item.name
+                 label  
+                 span(class='item-count' id='#{index}-count')= item.number
+            - } else {
+                h1(class='hover-list empty') Add
+            - } 
+        form(action='remove/#{list.name}' method='POST')
+            button(class='btn tile-remove') &#10006 
+extend layout
+block content
+    script(src="divListener.js")
+    - if (!lists.length) {
+      h1.home-msg Your lists are empty
+    - } else { 
+      div.tile-field
+        each list, index in lists 
+            +tile-list(list, index)
+    - }
+             

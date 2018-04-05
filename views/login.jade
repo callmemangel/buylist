@@ -3,21 +3,24 @@ extend layout
 block content
   script(src="validate.js")
   form(
-  class='reg-form' 
+  class='form' 
   onsubmit="return validate('#{type}')"
-  action='/login'
+  action='/#{type}'
   method='POST'
-  id='reg-form'
+  id='form'
   )
     .inp-field
         label(for='username' id="usname-label") Username 
-        block tag 
-        input(type='text' name='username' id='username')
+            block tag 
+        input(type='text' name='username' id='username' autofocus)
 
     .inp-field
         label(for='pass' id="pass-label") Password 
-        block tag
+            block tag
         input(type='password' name='password' id='pass')
+    
     block input
+    - if (wrongLogOrPass) {
+    label(for='form' class="red") Incorrect username or password
+    - }
     button(class="btn") #{button}
-

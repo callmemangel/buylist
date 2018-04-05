@@ -1,0 +1,28 @@
+extend layout
+block content 
+    script(src='list.js')
+    div.list-field 
+      h1.list-name= name  
+      form(class="add-item" action="/lists/#{name}" method='POST')
+          button(onclick='return validate()' class='btn float-right' id='add-item') Add 
+          input(
+          class='float-right number' 
+          type='number' 
+          name='itemNumber' 
+          id='itemNumber' 
+          value='1'     
+          min='1' 
+          max='99'
+          )
+          input(type='text' name='item' id='item' placeholder='   add item' autofocus)
+      div(class='items' id='items')
+        form(action='/remove/#{name}/items' method='POST')
+         each item, index in items 
+           .item 
+            input(type='checkbox' class='rounded' name='#{item.name}' id='checkbox-#{index}') 
+            label(for='checkbox-#{index}' id='#{index}-name')= item.name
+            label  
+            label(for='checkbox-#{index}' id='#{index}-number')= item.number
+         -if (isItems) {    
+         button(onclick='return remove()' class='btn btn-left' id='remove-selected') Remove
+         - }

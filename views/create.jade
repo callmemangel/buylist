@@ -1,0 +1,14 @@
+extend layout
+block content
+    script(src="validate.js")
+    form(
+    class='form'
+    onsubmit="return validate('#{type}')" 
+    action='/create'
+    method='POST'
+    id='form'
+    ) 
+        .inp-field
+            label(for='list-name' id='list-name-label') Input list name
+            input(type='text' name='listname' id='list-name' autofocus)
+            button(class="btn") Create
