@@ -1,5 +1,5 @@
 /*reset*/
-html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+html, body, div, span, object, iframe, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, 
 figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
@@ -31,7 +31,8 @@ body, html {
     margin: 0;
     width: 100%;
     height: 100%;
-    font-family: 'Work Sans', sans-serif;
+    font-family: 'Dancing Script', sans-serif;
+    background: #FFFEFC;
 }
 /*reset end*/
 .red {
@@ -46,8 +47,8 @@ body, html {
     display: inline-block;
     float: left;
     margin-right: 1px;
-    font-family: 'Raleway', sans-serif;
-    font-size: 1.1em;
+    font-family: 'Dancing Script', sans-serif;
+    font-size: 1.6em;
 }
 .navbar {
     min-width: 100%;
@@ -94,11 +95,13 @@ body, html {
     margin-top: 7px;
 }
 .form label {
+    font-family: 'Work Sans', sans-serif;
     font-size: 0.8em;
     display: block;
 }
 
 input {
+    box-shadow: 0 0 1px rgba(0,0,0,0.5);
     border: 1px solid rgb(138,147,146);
     border-radius: 3px;
 }
@@ -106,6 +109,7 @@ input {
     font-size: 1.7em;
     width: 100%;
     margin-top: 5px;
+
 }
 .btn {
     color: white;
@@ -168,12 +172,14 @@ input {
 .tile-list h2 {
     text-align: center;
     margin-bottom: 10px;
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 .tile-list li {
+    font-size: 1.2em;
     max-width: 70%;
     margin: 10px;
-    margin-top: 11px;
+    margin-top: 10px;
+    padding-bottom: 4px;
     border-bottom: 1px dashed white;
 }
 
@@ -189,9 +195,9 @@ input {
     position: absolute;
     display: table-cell;
     border-bottom: 2px solid white;
-    margin-top: 60px;
+    margin-top: 50px;
     visibility: hidden;
-    font-size: 2.2em;
+    font-size: 3.0em;
     opacity: 0;
     transition: visibility 0.3s, opacity 0.3s linear;
 }
@@ -203,7 +209,7 @@ input {
 }
 .tile-list .hover-list:hover {
     border-bottom: 2px solid #2f3036;
-    margin-top: 55px;
+    margin-top: 45px;
 }
 .tile-list:hover ul {
     visibility: hidden;
@@ -231,11 +237,38 @@ input {
     display: none;
     transition: all 0.5s;
 }
-.list-field {
-    width: 50%;
+
+.background {
+    vertical-align: top;
+    display: inline-block;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    background: #2f3036;
+    border-radius: 10px; 
+    border: 1px solid white;
+    color: white;
+}
+
+.list-background {
+    min-width: 350px; 
+    width: 20%;
     margin: 0 auto;
-    margin-top: 100px;
-    border: 0px solid red;
+    margin-top: 90px;
+}
+
+.list {
+    text-align: center;
+    font-family: 'Dancing Script', sans-serif;
+}
+.list-background .btn {
+    border: 1px solid white;
+}
+.list-field {
+    text-align: left;
+    width: 80%;
+    margin: 10px auto;
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .list-field h1 {
@@ -244,42 +277,90 @@ input {
 }
 
 .list-field .items {
-    margin-top: 10px;
-    padding-left: 50px;
+    font-size: 1.4em;
+    margin: 0 auto;
+    display: table;
 }
 
-.list-field li {
-    padding: 10px;
-    padding-top: 10px;
+.list-field .items .item {
+    min-height: 2px;
+    padding: 5px 0;
+    border-bottom: 1px dashed white;
+    font-size: 1.2em;
+    border-radius: 5px;
+    transition: background 0.3s linear;
+}
+
+.list-field .item:hover {
+    cursor: pointer;
+    background: #f4511e;
+    border-bottom: 1px solid #2f3036;
+}
+
+.list-field .item label:hover {
+    cursor: pointer;
+}
+
+.list-field .item input:hover {
+    cursor: pointer;
 }
 
 .list-field input {
     font-size: 1.2em;    
 }
 
-.list-field .add-item {
-    width: 35%;
-    margin: 0 auto;
-    margin-top: 10px;
-    margin-bottom: 20px;   
-}
-
-.items button {
+.list-field .items button {
     margin-top: 10px;
     font-size: 1.2em;
     margin-left: 10px;
+    margin-top: 20px;
+    border: 0px solid black;
+    border-left: 1px dashed white;
+    border-right: 1px dashed white;
+    transition: all 0.5s linear;
+}
+
+.list-field .items button:hover {
+    border-left: 1px solid #2f3036;
+    border-right: 1px solid #2f3036;
+}
+
+.add-item-background {
+    min-width: 330px; 
+    margin-top: 90px;
+    margin-right: 20px;
+    width: 15%;
+}
+
+.add-item {
+    border: 1px solid white;
+    border-radius: 10px;
+    width: 80%;
+    margin: 10px auto 30px auto;
+    padding: 15px;
+}
+.list .add-item h1 {
+    font-size: 100pxm;
 }
 
 .add-item button {
-    font-size: 14px;
+    font-size: 1.5em;
+    display: block;
+    border: 1px solid white;
+    margin: 0 auto;
+    margin-top: 20px;
+    transition: all 0.3s linear;
 }
 
 .add-item input[type='number'] {
+    font-size: 1.4em;
+    margin-left: 10px;
     margin-right: 5px;
     width: 40px;
 }
 
 .add-item input[type='text'] {
+    font-size: 1.4em;
     width: 60%;
     min-width: 50px;
 }
@@ -316,4 +397,12 @@ input {
     bottom: 0px;
 }*/
 
+.add-item .anim {
+    font-size: 0em;
+    opacity: 0;
+    transform: rotate(1080deg);
+    right: 700px;
+    border-radius: 50%;
+    transition: all 3s linear;
+}
 

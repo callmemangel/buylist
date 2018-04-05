@@ -29,3 +29,18 @@ function remove() {
 //    let listName = query[query.length - 1];
 
 }
+
+function addListeners() {
+    let items = document.getElementsByClassName('item');
+    for (let i = 0; i < items.length; i++) {
+        items[i].addEventListener('click', () => {
+            let elem = document.getElementById('checkbox-' + i);
+            elem.checked = !elem.checked; 
+        });
+    }
+    document.getElementById('add-item').addEventListener('click', () => {
+        document.getElementById('add-item').classList.add('anim'); 
+    });
+}
+
+document.addEventListener('DOMContentLoaded', addListeners);

@@ -1,12 +1,14 @@
 extend layout
 block content 
-    script(src='list.js')
-    div.list-field 
-      h1.list-name= name  
-      form(class="add-item" action="/lists/#{name}" method='POST')
-          button(onclick='return validate()' class='btn float-right' id='add-item') Add 
+   script(src='list.js')
+   .list 
+    div(class='background add-item-background')
+     h1 Add
+     div.add-item
+      form(action="/lists/#{name}" method='POST')
+          input(type='text' name='item' id='item' autofocus maxlength="13")
           input(
-          class='float-right number' 
+          class='number' 
           type='number' 
           name='itemNumber' 
           id='itemNumber' 
@@ -14,15 +16,21 @@ block content
           min='1' 
           max='99'
           )
-          input(type='text' name='item' id='item' placeholder='   add item' autofocus)
-      div(class='items' id='items')
-        form(action='/remove/#{name}/items' method='POST')
-         each item, index in items 
-           .item 
-            input(type='checkbox' class='rounded' name='#{item.name}' id='checkbox-#{index}') 
-            label(for='checkbox-#{index}' id='#{index}-name')= item.name
-            label  
-            label(for='checkbox-#{index}' id='#{index}-number')= item.number
-         -if (isItems) {    
-         button(onclick='return remove()' class='btn btn-left' id='remove-selected') Remove
-         - }
+          button(onclick='return validate()' class='btn' id='add-item') Add 
+    div(class='background list-background')
+        div.list-field 
+          h1.list-name= name  
+          div(class='items' id='items')
+            form(action='/remove/#{name}/items' method='POST')
+             each item, index in items 
+               .item 
+                input(type='checkbox' class='rounded' name='#{item.name}' id='checkbox-#{index}') 
+                label(for='checkbox-#{index}' id='#{index}-name')= item.name
+                label  
+                label(for='checkbox-#{index}' id='#{index}-number')= item.number
+             -if (isItems) {    
+             button(onclick='return remove()' class='btn btn-left' id='remove-selected') Remove
+             - } else {
+                div.item
+             - }
+    
