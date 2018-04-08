@@ -5,7 +5,7 @@ block content
     div(class='background add-item-background')
      h1 Add
      div.add-item
-      form(action="/lists/#{name}" method='POST')
+      form(action="/lists?name=#{name}&id=#{id}" method='POST')
           input(type='text' name='item' id='item' autofocus maxlength="13")
           input(
           class='number' 
@@ -21,13 +21,13 @@ block content
         div.list-field 
           h1.list-name= name  
           div(class='items' id='items')
-            form(action='/remove/#{name}/items' method='POST')
+            form(action='/removeitem?name=#{name}&id=#{id}' method='POST')
              each item, index in items 
                .item 
-                input(type='checkbox' class='rounded' name='#{item.name}' id='checkbox-#{index}') 
-                label(for='checkbox-#{index}' id='#{index}-name')= item.name
+                input(type='checkbox' class='rounded' name='#{item.item_name}' id='checkbox-#{index}') 
+                label(for='checkbox-#{index}' id='#{index}-name')= item.item_name
                 label  
-                label(for='checkbox-#{index}' id='#{index}-number')= item.number
+                label(for='checkbox-#{index}' id='#{index}-number')= item.count
              -if (isItems) {    
              button(onclick='return remove()' class='btn btn-left' id='remove-selected') Remove
              - } else {

@@ -1,12 +1,32 @@
 const express       = require('express');
 const app           = express();
 const path          = require('path');
-const Datastore     = require('nedb');
 const cookieSession = require('cookie-session');
 const favicon       = require('serve-favicon');
+const mysql         = require('mysql');
 
-const usersDB = new Datastore({filename: "users"});
-const dataDB = new Datastore({filename: "data"});
+function parseResult(result) {
+    let array = [];
+    let ids = [];
+
+    for (let i = 0; i < result.length; i++) {
+        if (!ids.includes(result[i].list_id)) {
+            ids.push(result[i].list_id);
+            array.push({ id: result[i].list_id, name: result[i].list_name, data: [] });
+        }
+    }
+
+    for (let i = 0; i < ids.length; i++) {
+        for (let j = 0; j < result.length; j++) {
+            if (ids[i] == result[j].list_id) {
+                array[i].data.push({ name: result[j].item_name, count: result[j].count });
+                result.splice(j, 1);
+                j -= 1;
+            }
+        } 
+    }
+    return array;
+}
 
 function loginRequired(req, res, next) {
     if (req.session.isLogged) {
@@ -23,6 +43,23 @@ function notLoggedOnly(req, res, next) {
         next();
     }
 }
+
+let connection = mysql.createConnection({
+    host                : 'localhost',
+    user                : 'root',
+    password            : '1',
+    database            : 'buylist_app',
+    multipleStatements  : true
+});
+
+connection.connect((err) => {
+        if (err) {
+            console.log("Smth went wrong ", err); 
+        } 
+
+        console.log("Successfully connected");
+});
+
 
 app.set('views', './views');
 app.set('view engine', 'jade');
@@ -41,6 +78,7 @@ app.use(cookieSession({
 }));
 
 app.use((req, res, next) => {
+    console.log(req.session);
     if (req.session.isLogged) {
         res.locals.isLogged = true;
     } else {
@@ -51,17 +89,22 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-    if (req.session.isLogged) {
-        dataDB.loadDatabase();
 
-        dataDB.find({}, (err, docs) => {
+    if (req.session.isLogged) {
+        
+        let queryStr = "SELECT lists.list_id, lists.list_name, items.item_name, items.count " +
+                       "FROM lists " +
+                       "LEFT JOIN items " +
+                       "ON lists.list_id=items.list_id WHERE user_id = " +
+                       connection.escape(req.session.userId);
+
+        connection.query(queryStr, (err, result) => {
             if (err) {
-                console.log("Something went wrong"); 
-                return;
-            }
-            res.locals.lists = docs;
-            res.locals.isLogged = req.session.isLogged
-            res.render('home', {title: 'Buy list'});
+                console.log(err); 
+            } else {
+                res.locals.lists = parseResult(result);
+                res.render('home', {title: 'Buy list'});
+            } 
         });
     } else {
         res.locals.lists = [];
@@ -81,13 +124,13 @@ app.route('/create')
     .post(loginRequired, (req, res) => {
         dataDB.loadDatabase();
         
-        dataDB.insert({name: req.body.listname, 
-                       data: []}, (err, doc) => {
+        connection.query("INSERT INTO lists (user_id, list_name) VALUES (?, ?)", [req.session.userId, req.body.listname], (err, result) => {
             if (err) {
-                console.log("Something went wrong", err); 
-            } 
-            console.log("docs", doc);
-            res.redirect('/');
+                console.log(err); 
+                res.redirect('/create');
+            } else {
+                res.redirect('/'); 
+            }
         });
     });
 
@@ -104,30 +147,16 @@ app.route('/register')
     .post((req, res) => {
         let username = req.body.username;
         let password = req.body.password;
-        usersDB.loadDatabase();
         
-        usersDB.find({username: username}, (err, docs) => {
+        connection.query("INSERT INTO users (name, password) VALUES (?, ?)", [username, password], (err, result) => {
             if (err) {
-                console.log("Something went wrong", err); 
-            }
-            console.log("docs", docs);
-            
-            if (!docs[0]) {
-                usersDB.insert({username: username, password: password}, (err, newDoc) => {
-                    if (err) {
-                        console.log("Something went wrong"); 
-                    } 
-                    console.log(newDoc);
-
-                    req.session.isLogged = true; 
-                    res.redirect('/');
-                });
+                console.log(err);
+                res.redirect('/register'); 
             } else {
-                res.locals.nameIsBusy = true;
-                res.render('register', {
-                title: 'Register', 
-                button: 'Register',
-                type: 'register'});
+                req.session.isLogged = true;
+                req.session.userId = result.insertId;
+                
+                res.redirect('/');
             }
         });
     });
@@ -139,105 +168,119 @@ app.route('/login')
         button: 'Login',
         type: 'login'});
     })
+
     .post((req, res) => {
 
         let username = req.body.username;
         let password = req.body.password;
-        usersDB.loadDatabase();
-
-        usersDB.find({username: username}, (err, docs) => {
+        
+        let queryStr = "SELECT password, user_id FROM users WHERE name = " + 
+                       connection.escape(username);
+        
+        connection.query(queryStr, (err, result) => {
             if (err) {
-                console.log("Something went wrong", err); 
+                console.log(err); 
             }
-            console.log("some docs");
-            console.log("docs", docs);
 
-            if (!docs[0] || password != docs[0].password) {
+            if (password == result[0].password) {
+                req.session.isLogged = true;
+                req.session.userId = result[0].user_id;
+
+                res.redirect('/');
+            } else {
                 res.locals.wrongLogOrPass = true;
+
                 res.render('login', {
                 title: 'Login', 
                 button: 'Login',
                 type: 'login'});
-            } else {
-                req.session.isLogged = true;
-                res.redirect('/'); 
             }
         });
-
     });
 
-app.route('/lists/:name') 
+app.route('/lists/') 
     .get(loginRequired, (req, res) => {
-        dataDB.loadDatabase();
-        dataDB.find({name: req.params.name}, (err, doc) => {
-           
+        let query = "SELECT item_name, count FROM items WHERE list_id = " +
+                    connection.escape(req.query.id);
+        connection.query(query, (err, result) => {
             if (err) {
+                console.log(err); 
                 res.redirect('/');
-                return;
+            } else {
+                console.log(result); 
+                let isItems = false;
+
+                if (result.length) {
+                    isItems = true;
+                }
+                console.log(isItems);
+
+                res.render('list', {
+                    title   : req.query.name,
+                    id      : req.query.id,
+                    name    : req.query.name,
+                    items   : result,
+                    isItems : isItems
+                });
             }
-
-            let isItems = false;
-            console.log("Doc.length", doc[0].data.length); 
-
-            if (doc[0].data.length) {
-                isItems = true;
-            }
-            console.log(isItems);
-
-            res.render('list', {
-            title: req.params.name,
-            name: req.params.name,
-            items: doc[0].data,
-            isItems: isItems
-            });
         });
     })
 
     .post((req, res) => {
-        dataDB.loadDatabase();
-        dataDB.update({name: req.params.name}, 
-                      {$push: {data: {name: req.body.item, number: req.body.itemNumber}}},
-                      {}, 
-                      (err) => {
-                        if(err) {
-                            res.redirect('/');
-                            return;
-                        } 
-                        res.redirect('/lists/' + req.params.name);
+        connection.query("INSERT INTO items (list_id, item_name, count) VALUES (?, ?, ?)", 
+                         [req.query.id, req.body.item, req.body.itemNumber], (err, result) => {
+                            if (err) {
+                                console.log(err); 
+                                res.redirect('/');
+                            } else {
+                                res.redirect('/lists?name=' + req.query.name + '&id=' + req.query.id);
+                            }
         });
     });
 
-app.post('/remove/:name/items', (req, res) => {
-        dataDB.loadDatabase();
-
+app.post('/removeitem/', (req, res) => {
+        
         let items = [];
- 
+        console.log(req.body); 
+
         for (var prop in req.body) {
             items.push(prop); 
         }
-
+        
+        console.log(items);
         for (let i = 0; i < items.length; i++) {
-            dataDB.update({ name: req.params.name }, { $pull: { data: { name: items[i] } } });;
+            let query = "DELETE FROM items WHERE list_id = " + 
+                        connection.escape(req.query.id)      +
+                        "AND item_name = "                   +
+                        connection.escape(items[i]);
+            connection.query(query, (err) => {
+                if (err) {
+                    console.log(err); 
+                } 
+            });
         }
-        res.redirect('/lists/' + req.params.name);
+
+        res.redirect('/lists?name=' + req.query.name + '&id=' + req.query.id);
     });
 
-app.post('/remove/:name', (req, res) => {
-        dataDB.loadDatabase();
+app.post('/remove/:id', (req, res) => {
 
-        dataDB.remove({ name: req.params.name }, (err, numRemoved) => {
-            console.log("Table ", req.params.name, " removed"); 
-            res.redirect('/');
+        console.log("GOT REMOVE BY");
+        let query1 = "DELETE FROM lists WHERE list_id = " + 
+                     connection.escape(req.params.id);
+        let query2 = "DELETE FROM items WHERE list_id = " +
+                     connection.escape(req.params.id);
+
+        connection.query(query1 + ";" + query2, (err, result) => {
+            if (err) {
+                console.log(err); 
+            } else {
+                res.redirect('/'); 
+            }
         });
 });
 
-
 app.get('/logout', (req, res) => {
-    req.session.isLogged = false;
-    res.redirect('/');
-});
-
-app.get('/kill', (req, res ) => {
     req.session = null;
     res.redirect('/');
 });

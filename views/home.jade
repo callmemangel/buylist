@@ -1,19 +1,19 @@
 mixin tile-list(list, findex)
     div(class="tile-list" id="tilelist")
-        h2(class="list-name" id="list-name-#{findex}")= list.name
+        h2(class="list-name" id="list-name-#{findex}" value="#{list.id}")= list.name
         .items 
-            - if (list.data.length != 0) {
+            - if (list.data[0].name !== null) {
             h1(class='hover-list show') Show
             ul
               each item, index in list.data
                 li
                  span(class='itemname' id='#{index}-name')= item.name
                  label  
-                 span(class='item-count' id='#{index}-count')= item.number
+                 span(class='item-count' id='#{index}-count')= item.count
             - } else {
                 h1(class='hover-list empty') Add
             - } 
-        form(action='remove/#{list.name}' method='POST')
+        form(action='remove/#{list.id}' method='POST')
             button(class='btn tile-remove') &#10006 
 extend layout
 block content

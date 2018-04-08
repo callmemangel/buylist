@@ -397,12 +397,12 @@ input {
     bottom: 0px;
 }*/
 
-.add-item .anim {
+/*.add-item .anim {
     font-size: 0em;
     opacity: 0;
     transform: rotate(1080deg);
     right: 700px;
     border-radius: 50%;
     transition: all 3s linear;
-}
+}*/
 
