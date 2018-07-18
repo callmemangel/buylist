@@ -2,7 +2,7 @@ const express       = require('express');
 const app           = express();
 const path          = require('path');
 const cookieSession = require('cookie-session');
-const favicon       = require('serve-favicon');
+//const favicon       = require('serve-favicon');
 const mysql         = require('mysql');
 
 function parseResult(result) {
@@ -66,7 +66,7 @@ app.set('view engine', 'jade');
 
 app.use(express.static(__dirname + '/public'));
 app.use('/lists', express.static(__dirname + '/public'));
-app.use(favicon(__dirname + '/public/favicon.ico'));
+//app.use(favicon(__dirname + '/public/favicon.ico'));
 
 app.use(express.json());       
 app.use(express.urlencoded({extended: true}));
@@ -122,7 +122,6 @@ app.route('/create')
     })
 
     .post(loginRequired, (req, res) => {
-        dataDB.loadDatabase();
         
         connection.query("INSERT INTO lists (user_id, list_name) VALUES (?, ?)", [req.session.userId, req.body.listname], (err, result) => {
             if (err) {
